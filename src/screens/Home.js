@@ -1,5 +1,19 @@
 import React from "react";
-import { InputRightElement, VStack, Flex, Text, InputGroup, InputLeftElement, Input, HStack, Box, Circle, Image, IconButton, Icon } from '@chakra-ui/react'
+import {
+    InputRightElement,
+    VStack,
+    Flex,
+    Text,
+    InputGroup,
+    InputLeftElement,
+    Input,
+    HStack,
+    Box,
+    Circle,
+    Image,
+    IconButton,
+    Icon
+} from '@chakra-ui/react';
 import { AiFillInstagram, AiOutlineSend, AiFillPhone, AiTwotoneVideoCamera, AiOutlinePlus, AiFillHome, AiOutlineUsergroupDelete, AiFillBell, AiOutlineSmallDash, AiOutlineSearch } from "react-icons/ai";
 import MessageListItem from "../components/MessageListItem";
 import Message from "../components/Message";
@@ -7,6 +21,8 @@ import { GrAttachment } from "react-icons/gr";
 import { FaFacebook } from "react-icons/fa";
 
 const Home = () => {
+
+    console.log('Come here');
 
     const renderMenu = () => {
         return (
