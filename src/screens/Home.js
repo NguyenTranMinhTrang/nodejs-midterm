@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     InputRightElement,
     VStack,
@@ -16,13 +16,19 @@ import {
 } from '@chakra-ui/react';
 import { AiFillInstagram, AiOutlineSend, AiFillPhone, AiTwotoneVideoCamera, AiOutlinePlus, AiFillHome, AiOutlineUsergroupDelete, AiFillBell, AiOutlineSmallDash, AiOutlineSearch } from "react-icons/ai";
 import MessageListItem from "../components/MessageListItem";
+import GroupChatModal from "../components/GroupChatModal";
 import Message from "../components/Message";
 import { GrAttachment } from "react-icons/gr";
 import { FaFacebook } from "react-icons/fa";
 
+
 const Home = () => {
 
     console.log('Come here');
+
+    const handleAddGroup = () => {
+
+    }
 
     const renderMenu = () => {
         return (
@@ -103,10 +109,11 @@ const Home = () => {
 
                     <HStack mt={4} mb={4}>
                         <Text>Add new</Text>
-                        <Circle size='40px' bg='#44D7B6' color='white' onClick={() => console.log('Click')}>
-                            <AiOutlinePlus size={20} />
-                        </Circle>
-
+                        <GroupChatModal>
+                            <Circle cursor={'pointer'} size='40px' bg='#44D7B6' color='white' onClick={handleAddGroup}>
+                                <AiOutlinePlus size={20} />
+                            </Circle>
+                        </GroupChatModal>
                     </HStack>
                 </VStack>
 
@@ -194,7 +201,7 @@ const Home = () => {
                         <Input placeholder='Type a message ...' bg={'#F9F8F8'} focusBorderColor='#44D7B6' />
                         <InputRightElement
                             children={
-                                <Circle mr={-6} size='40px' bg='#44D7B6' color='white' onClick={() => console.log('Click')}>
+                                <Circle cursor={'pointer'} mr={-6} size='40px' bg='#44D7B6' color='white' onClick={() => console.log('Click')}>
                                     <AiOutlineSend size={20} />
                                 </Circle>
                             }
