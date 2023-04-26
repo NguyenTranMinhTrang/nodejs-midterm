@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     InputRightElement,
     VStack,
@@ -12,22 +12,42 @@ import {
     Circle,
     Image,
     IconButton,
-    Icon
+    Icon,
+    Button
 } from '@chakra-ui/react';
-import { AiFillInstagram, AiOutlineSend, AiFillPhone, AiTwotoneVideoCamera, AiOutlinePlus, AiFillHome, AiOutlineUsergroupDelete, AiFillBell, AiOutlineSmallDash, AiOutlineSearch } from "react-icons/ai";
+import { AiFillInstagram, AiOutlineSend, AiFillPhone, AiTwotoneVideoCamera, AiOutlinePlus, AiFillHome, AiOutlineUsergroupDelete, AiFillBell, AiOutlineSmallDash, AiOutlineSearch, AiOutlineLogout } from "react-icons/ai";
 import MessageListItem from "../components/MessageListItem";
 import GroupChatModal from "../components/GroupChatModal";
 import Message from "../components/Message";
 import { GrAttachment } from "react-icons/gr";
 import { FaFacebook } from "react-icons/fa";
-
+import { useNavigate } from "react-router-dom";
+import utils from "../utils";
+import { toast } from "react-toastify";
 
 const Home = () => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
 
-    console.log('Come here');
+    useEffect(() => {
+        const userData = utils.getDataFromLocal('user');
+        console.log('user: ', userData);
+        if (!userData) {
+            navigate("/login");
+        } else {
+            setUser(userData);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleAddGroup = () => {
 
+    }
+
+    const handleLogout = () => {
+        localStorage.clear();
+        toast.success('Log out success !');
+        navigate("/login");
     }
 
     const renderMenu = () => {
@@ -49,7 +69,7 @@ const Home = () => {
                         <Image
                             borderRadius='full'
                             objectFit='cover'
-                            src='https://bit.ly/dan-abramov'
+                            src={user?.avatar}
                             alt='Dan Abramov'
                         />
                     </Circle>
@@ -84,6 +104,9 @@ const Home = () => {
                         color={'#676767'}
                         icon={<AiOutlineSmallDash />}
                     />
+                    <Button onClick={handleLogout} mt={20} padding={2} fontSize={16} rightIcon={<AiOutlineLogout />} colorScheme='whiteAlpha' variant='outline'>
+                        Log out
+                    </Button>
                 </Flex>
             </Box>
         );
@@ -156,7 +179,7 @@ const Home = () => {
                     <Image
                         borderRadius='full'
                         objectFit='cover'
-                        src='https://bit.ly/dan-abramov'
+                        src={user?.avatar}
                         alt='Dan Abramov'
                         boxSize='60px'
                     />
@@ -226,12 +249,12 @@ const Home = () => {
                     mt={50}
                     borderRadius='full'
                     objectFit='cover'
-                    src='https://bit.ly/dan-abramov'
+                    src={user?.avatar}
                     alt='Dan Abramov'
                     boxSize='180px'
                 />
-                <Text mt={2} mb={2} fontWeight={'bold'}>Minh Trang</Text>
-                <Text mb={2}>Bla bla bla</Text>
+                <Text mt={2} mb={2} fontWeight={'bold'}>{user?.name}</Text>
+                <Text mb={2}>Email: {user?.email}</Text>
                 <Text mb={2}>so it can be necessary to </Text>
                 <HStack>
                     <Icon as={FaFacebook} boxSize={9} />

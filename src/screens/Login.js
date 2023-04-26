@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     InputRightElement,
     Button,
@@ -11,17 +11,31 @@ import {
     IconButton,
 } from '@chakra-ui/react';
 import { AiOutlineMail, AiFillLock, AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
-
+import { toast } from 'react-toastify';
+import constants from "../constants";
+import utils from "../utils";
+import axiosInstance from '../config/axios';
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+    const navigate = useNavigate();
     const [data, setData] = useState({
         email: '',
         password: ''
     });
     const [show, setShow] = useState(false);
-    const handleClick = () => setShow(!show);
+    const [loading, setLoading] = useState(false);
 
-    console.log(data);
+    useEffect(() => {
+        const user = utils.getDataFromLocal('user');
+        console.log('user: ', user);
+        if (user) {
+            navigate("/");
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handleClick = () => setShow(!show);
 
     const handleSetState = (value, fieldName) => {
         data[fieldName] = value;
@@ -30,8 +44,30 @@ const Login = () => {
         });
     }
 
-    const handleLogin = () => {
-        console.log('Call api here');
+    const handleLogin = async () => {
+        if (!data.email || !data.password) {
+            toast.error('Field can not be empty !');
+        } else {
+            try {
+                setLoading(true);
+                console.log('come here: ', data);
+                const response = await axiosInstance.post(constants.LOGIN, { data });
+                console.log('come here: ', data);
+                console.log('response: ', response);
+                if (response?.success) {
+                    utils.saveToLocal('user', response.data.result);
+                    toast.success('Login success !');
+                    navigate("/");
+                } else {
+                    toast.error(response?.error);
+                }
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+                console.log('handleLogin: ', error);
+                toast.error('Request timeout !');
+            }
+        }
     }
 
     return (
@@ -91,7 +127,14 @@ const Login = () => {
                     </InputRightElement>
                 </InputGroup>
 
-                <Button onClick={handleLogin} color={'white'} bgGradient='linear(to-r, teal.500, green.500)' w={'100%'} mt={8} borderRadius={30}>
+                <Button
+                    onClick={handleLogin}
+                    color={'white'}
+                    bgGradient='linear(to-r, teal.500, green.500)'
+                    w={'100%'} mt={8}
+                    borderRadius={30}
+                    isLoading={loading}
+                >
                     Login
                 </Button>
             </Flex>
