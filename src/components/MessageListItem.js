@@ -1,9 +1,25 @@
 import React from "react";
-import { Flex, Image, VStack, Text } from '@chakra-ui/react';
+import { Flex, Image, VStack, Text, Button } from '@chakra-ui/react';
 
-const MessageListItem = () => {
+const MessageListItem = (chat) => {
+
+    const handleClick = () => {
+        console.log('Click');
+    }
+
     return (
-        <Flex flexDirection={'column'} w={'90%'} mt={4} mb={4} p={4} bg={'white'} shadow={'0 0 20px #ccc'}>
+        <Flex
+            onClick={handleClick}
+            _hover={{ opacity: 0.8 }}
+            cursor={'pointer'}
+            flexDirection={'column'}
+            w={'90%'}
+            mt={4}
+            mb={4}
+            p={4}
+            bg={'white'}
+            shadow={'0 0 20px #ccc'}
+        >
             <Flex flexDirection={'row'}>
                 <Image
                     borderRadius='full'

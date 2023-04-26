@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
-    InputRightElement,
-    VStack,
     Flex,
     Text,
-    InputGroup,
-    InputLeftElement,
-    Input,
     HStack,
     Box,
     Circle,
@@ -15,35 +10,18 @@ import {
     Icon,
     Button
 } from '@chakra-ui/react';
-import { AiFillInstagram, AiOutlineSend, AiFillPhone, AiTwotoneVideoCamera, AiOutlinePlus, AiFillHome, AiOutlineUsergroupDelete, AiFillBell, AiOutlineSmallDash, AiOutlineSearch, AiOutlineLogout } from "react-icons/ai";
-import MessageListItem from "../components/MessageListItem";
-import GroupChatModal from "../components/GroupChatModal";
-import Message from "../components/Message";
-import { GrAttachment } from "react-icons/gr";
+import { AiFillInstagram, AiFillHome, AiOutlineUsergroupDelete, AiFillBell, AiOutlineSmallDash, AiOutlineLogout } from "react-icons/ai";
 import { FaFacebook } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import utils from "../utils";
 import { toast } from "react-toastify";
+import services from "../services";
+import ListChat from "../components/ListChat";
+import ChatBox from "../components/ChatBox";
 
 const Home = () => {
+    const user = utils.getDataFromLocal('user');
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        const userData = utils.getDataFromLocal('user');
-        console.log('user: ', userData);
-        if (!userData) {
-            navigate("/login");
-        } else {
-            setUser(userData);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const handleAddGroup = () => {
-
-    }
-
     const handleLogout = () => {
         localStorage.clear();
         toast.success('Log out success !');
@@ -112,129 +90,6 @@ const Home = () => {
         );
     }
 
-    const renderUserList = () => {
-        return (
-            <Flex
-                flexDirection={'column'}
-                w={'30%'}
-                borderRightWidth={1}
-                borderRightColor={'#D1D2D5'}
-            >
-                {/* Search */}
-                <VStack p={4} alignItems={'flex-end'}>
-                    <InputGroup>
-                        <InputLeftElement
-                            pointerEvents='none'
-                            children={<AiOutlineSearch color='#D1D2D5' size={20} />}
-                        />
-                        <Input type='text' placeholder='Enter search ...' focusBorderColor="##44D7B6" />
-                    </InputGroup>
-
-                    <HStack mt={4} mb={4}>
-                        <Text>Add new</Text>
-                        <GroupChatModal>
-                            <Circle cursor={'pointer'} size='40px' bg='#44D7B6' color='white' onClick={handleAddGroup}>
-                                <AiOutlinePlus size={20} />
-                            </Circle>
-                        </GroupChatModal>
-                    </HStack>
-                </VStack>
-
-                {/* Message List Item */}
-                <Flex
-                    flexDirection={'column'}
-                    flex={1}
-                    overflowY={'scroll'}
-                    alignItems={'center'}
-                    sx={{
-                        "::-webkit-scrollbar": {
-                            display: "none",
-                        },
-                    }}
-                >
-                    <MessageListItem />
-                    <MessageListItem />
-                    <MessageListItem />
-                    <MessageListItem />
-                </Flex >
-            </Flex>
-        );
-    }
-
-    const renderChatBox = () => {
-        return (
-            <Flex
-                flexDirection={'column'}
-                w={'40%'}
-                borderRightWidth={1}
-                borderRightColor={'#D1D2D5'}
-            >
-                {/* Header */}
-                <Flex
-                    flexDirection={'row'}
-                    p={4}
-                    borderBottomWidth={1}
-                    borderBottomColor={'#D1D2D5'}
-                >
-                    <Image
-                        borderRadius='full'
-                        objectFit='cover'
-                        src={user?.avatar}
-                        alt='Dan Abramov'
-                        boxSize='60px'
-                    />
-
-                    <VStack w={'100%'} ml={2} alignItems={'flex-start'}>
-                        <Text as='b'>Minh Trang</Text>
-                        <Text color={'#676767'}>Online</Text>
-                    </VStack>
-
-                    <HStack w={'50%'} alignItems={'flex-start'} justifyContent={'flex-end'} >
-                        <Icon color={'#676767'} boxSize={5} as={AiFillPhone} />
-                        <Icon color={'#676767'} boxSize={5} as={AiTwotoneVideoCamera} />
-                        <Icon color={'#676767'} boxSize={6} as={AiOutlineSmallDash} />
-                    </HStack>
-                </Flex>
-
-                <Flex
-                    flexDirection={'column'}
-                    flex={1}
-                    p={4}
-                    overflowY={'scroll'}
-                    sx={{
-                        "::-webkit-scrollbar": {
-                            display: "none",
-                        },
-                    }}
-                >
-                    <Message left={true} />
-                    <Message left={false} />
-                    <Message left={true} />
-                    <Message left={false} />
-                </Flex>
-
-                <Flex h={'15%'} p={4} justifyContent={'center'} alignItems={'center'}>
-                    <InputGroup>
-                        <InputLeftElement
-                            pointerEvents='none'
-                            color='gray.300'
-                            fontSize='1.2em'
-                            children={<GrAttachment />}
-                        />
-                        <Input placeholder='Type a message ...' bg={'#F9F8F8'} focusBorderColor='#44D7B6' />
-                        <InputRightElement
-                            children={
-                                <Circle cursor={'pointer'} mr={-6} size='40px' bg='#44D7B6' color='white' onClick={() => console.log('Click')}>
-                                    <AiOutlineSend size={20} />
-                                </Circle>
-                            }
-                        />
-                    </InputGroup>
-                </Flex>
-            </Flex>
-        );
-    }
-
     const renderDetailUser = () => {
         return (
             <Flex
@@ -274,8 +129,8 @@ const Home = () => {
                 borderRadius={30}
             >
                 {renderMenu()}
-                {renderUserList()}
-                {renderChatBox()}
+                <ListChat />
+                <ChatBox />
                 {renderDetailUser()}
             </Flex>
         </Box>

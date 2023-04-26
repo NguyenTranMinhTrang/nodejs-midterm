@@ -18,8 +18,10 @@ import constants from "../constants";
 import _ from "lodash";
 import utils from "../utils";
 import { useNavigate } from "react-router-dom";
+import { ChatState } from "../context/ChatProvider";
 
 const Register = () => {
+    const { user } = ChatState();
     const [data, setData] = useState({
         name: '',
         email: '',
@@ -36,8 +38,6 @@ const Register = () => {
     const handleClickConfirm = () => setConfirmShow(!confirmShow);
 
     useEffect(() => {
-        const user = utils.getDataFromLocal('user');
-        console.log('user: ', user);
         if (user) {
             navigate("/");
         }

@@ -5,6 +5,7 @@ import Login from './screens/Login';
 import Register from './screens/Register';
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
+import ChatProvider from './context/ChatProvider';
 
 function App() {
   return (
@@ -22,11 +23,13 @@ function App() {
       />
       <ToastContainer />
       <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-        </Routes>
+        <ChatProvider>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+          </Routes>
+        </ChatProvider>
       </BrowserRouter>
     </ChakraProvider>
   );

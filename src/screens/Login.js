@@ -16,8 +16,10 @@ import constants from "../constants";
 import utils from "../utils";
 import axiosInstance from '../config/axios';
 import { useNavigate } from "react-router-dom";
+import { ChatState } from "../context/ChatProvider";
 
 const Login = () => {
+    const { user, setUser } = ChatState();
     const navigate = useNavigate();
     const [data, setData] = useState({
         email: '',
@@ -27,8 +29,6 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const user = utils.getDataFromLocal('user');
-        console.log('user: ', user);
         if (user) {
             navigate("/");
         }
@@ -50,16 +50,14 @@ const Login = () => {
         } else {
             try {
                 setLoading(true);
-                console.log('come here: ', data);
-                const response = await axiosInstance.post(constants.LOGIN, { data });
-                console.log('come here: ', data);
-                console.log('response: ', response);
-                if (response?.success) {
+                const response = await axiosInstance.post(constants.LOGIN, { ...data });
+                if (response?.data.success) {
                     utils.saveToLocal('user', response.data.result);
+                    setUser(response.data.result);
                     toast.success('Login success !');
                     navigate("/");
                 } else {
-                    toast.error(response?.error);
+                    toast.error(response?.data.error);
                 }
                 setLoading(false);
             } catch (error) {

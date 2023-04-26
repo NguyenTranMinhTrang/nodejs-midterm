@@ -1,7 +1,7 @@
 import axios from "axios";
 import constants from "../constants";
 
-const TIME_OUT = 1000;
+const TIME_OUT = 2000;
 
 const instance = axios.create({
     baseURL: constants.BASE_URL,
