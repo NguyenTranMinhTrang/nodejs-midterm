@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { ChatState } from "../context/ChatProvider";
 
 const Register = () => {
-    const { user } = ChatState();
+    const { setUser } = ChatState();
     const [data, setData] = useState({
         name: '',
         email: '',
@@ -38,7 +38,9 @@ const Register = () => {
     const handleClickConfirm = () => setConfirmShow(!confirmShow);
 
     useEffect(() => {
-        if (user) {
+        const userInfo = utils.getDataFromLocal('user');
+        if (userInfo) {
+            setUser(userInfo);
             navigate("/");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,9 +84,9 @@ const Register = () => {
             }
             try {
                 const response = await axiosInstance.post(constants.REGISTER, dataPost);
-                console.log('response: ', response);
                 if (response.data.success) {
                     utils.saveToLocal('user', response.data.result);
+                    setUser(response.data.result);
                     setLoading(false);
                     toast.success('Register success !');
                     navigate("/");

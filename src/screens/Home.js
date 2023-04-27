@@ -13,15 +13,21 @@ import {
 import { AiFillInstagram, AiFillHome, AiOutlineUsergroupDelete, AiFillBell, AiOutlineSmallDash, AiOutlineLogout } from "react-icons/ai";
 import { FaFacebook } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import utils from "../utils";
 import { toast } from "react-toastify";
-import services from "../services";
 import ListChat from "../components/ListChat";
 import ChatBox from "../components/ChatBox";
+import { ChatState } from "../context/ChatProvider";
 
 const Home = () => {
-    const user = utils.getDataFromLocal('user');
+    const { user } = ChatState();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user) {
+            navigate("/login");
+        }
+    }, [])
+
     const handleLogout = () => {
         localStorage.clear();
         toast.success('Log out success !');
@@ -48,7 +54,7 @@ const Home = () => {
                             borderRadius='full'
                             objectFit='cover'
                             src={user?.avatar}
-                            alt='Dan Abramov'
+                            alt={user.name}
                         />
                     </Circle>
                     <IconButton
@@ -110,7 +116,7 @@ const Home = () => {
                 />
                 <Text mt={2} mb={2} fontWeight={'bold'}>{user?.name}</Text>
                 <Text mb={2}>Email: {user?.email}</Text>
-                <Text mb={2}>so it can be necessary to </Text>
+                <Text mb={2}>Let's chat together</Text>
                 <HStack>
                     <Icon as={FaFacebook} boxSize={9} />
                     <Icon as={AiFillInstagram} boxSize={10} />
@@ -121,18 +127,23 @@ const Home = () => {
 
     return (
         <Box h='100vh' bg={'#F4F7FF'} padding={8}>
-            <Flex
-                w={'100%'}
-                h={'100%'}
-                flexDirection={'row'}
-                bg={'white'}
-                borderRadius={30}
-            >
-                {renderMenu()}
-                <ListChat />
-                <ChatBox />
-                {renderDetailUser()}
-            </Flex>
+            {
+                user ?
+                    <Flex
+                        w={'100%'}
+                        h={'100%'}
+                        flexDirection={'row'}
+                        bg={'white'}
+                        borderRadius={30}
+                    >
+                        {renderMenu()}
+                        <ListChat />
+                        <ChatBox />
+                        {renderDetailUser()}
+                    </Flex>
+                    :
+                    null
+            }
         </Box>
     )
 };

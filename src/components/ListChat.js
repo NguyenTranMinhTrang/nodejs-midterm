@@ -23,16 +23,14 @@ import ChatLoading from "./ChatLoading";
 import _ from "lodash";
 import UserListItem from "./UserListItem";
 import { toast } from "react-toastify";
-import utils from "../utils";
 
 const ListChat = () => {
-    const user = utils.getDataFromLocal('user');
     const {
+        user,
         chats,
         setChats,
-        setSelectedChat
+        setSelectedChat,
     } = ChatState();
-    const [listChat, setListChat] = useState([]);
     const [resultSearch, setResultSearch] = useState([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(false);
@@ -40,17 +38,23 @@ const ListChat = () => {
 
     const getListChat = async () => {
         const list = await services.getAllChat(user.token);
-        setListChat(list);
-        setResultSearch(list);
+        const newList = _.map(list, (chat) => {
+            return {
+                ...chat,
+                unread: false
+            }
+        })
+        console.log('list: ', newList);
+        setChats(newList);
     }
 
     useEffect(() => {
         getListChat();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleFunction = async (userId) => {
         const getChat = await services.accessChat(userId, user.token);
-        console.log('getChat: ', getChat);
         if (!chats.find((c) => c._id === getChat._id)) setChats([getChat, ...chats]);
         setSelectedChat(getChat);
         onClose();
@@ -75,9 +79,9 @@ const ListChat = () => {
             borderRightColor={'#D1D2D5'}
         >
             {/* Search */}
-            <VStack p={4} alignItems={'flex-end'}>
+            <VStack p={4} alignItems={'flex-start'}>
                 <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-                    <Button onClick={onOpen} w={'100%'} leftIcon={<AiOutlineSearch color="white" />} bg={'#44D7B6'} variant='solid'>
+                    <Button onClick={onOpen} w={'50%'} leftIcon={<AiOutlineSearch color="white" />} bg={'#44D7B6'} variant='solid'>
                         <Text d={{ base: "none", md: "flex" }} color={'white'}>
                             Search User
                         </Text>
@@ -100,8 +104,14 @@ const ListChat = () => {
                     }}
                 >
                     {
-                        _.map(listChat, (chat) => {
-                            return <MessageListItem chat={chat} />
+                        _.map(chats, (chat) => {
+                            return (
+                                <MessageListItem
+                                    chat={chat}
+                                    handleClick={() => setSelectedChat(chat)}
+                                />
+                            );
+
                         })
                     }
                 </Flex >

@@ -21,12 +21,12 @@ import services from "../services";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
 import _ from "lodash";
-import utils from "../utils";
+import ScrollableFeed from 'react-scrollable-feed';
+
 const ENDPOINT = "http://localhost:5000";
-var socket, selectedChatCompare;
+var socket, selectedChatCompare, receiveChatCompare;
 
 const ChatBox = () => {
-    const user = utils.getDataFromLocal('user');
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [newMessage, setNewMessage] = useState("");
@@ -34,13 +34,12 @@ const ChatBox = () => {
     const [typing, setTyping] = useState(false);
     const [istyping, setIsTyping] = useState(false);
     const {
-        chats,
-        selectedChat
+        unReadChats,
+        user,
+        selectedChat,
+        setUnReadChats,
+        setChats
     } = ChatState();
-
-    console.log('messages: ', messages);
-    console.log('selectedChat: ', selectedChat);
-
 
     useEffect(() => {
         socket = io(ENDPOINT);
@@ -62,7 +61,10 @@ const ChatBox = () => {
             if (
                 !selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id
             ) {
-                // Notification
+                if (!receiveChatCompare || receiveChatCompare._id !== newMessageRecieved._id) {
+                    receiveChatCompare = newMessageRecieved;
+                    toast.success(`You got a new message from ${newMessageRecieved.sender.name}`)
+                }
             } else {
                 setMessages([...messages, newMessageRecieved]);
             }
@@ -110,7 +112,6 @@ const ChatBox = () => {
                 setNewMessage("");
                 const data = await services.sendNewMessage(dataPost, user.token);
                 socket.emit("new message", data);
-                console.log('send message success: ', data);
                 setMessages([...messages, data]);
             } catch (error) {
                 toast.error('Request timeout! Please try again.');
@@ -159,7 +160,6 @@ const ChatBox = () => {
                         <Flex
                             flexDirection={'column'}
                             flex={1}
-                            p={4}
                             overflowY={'scroll'}
                             sx={{
                                 "::-webkit-scrollbar": {
@@ -176,7 +176,7 @@ const ChatBox = () => {
                                     margin="auto"
                                 />
                             ) : (
-                                <>
+                                <ScrollableFeed>
                                     {
                                         _.map(messages, (message) => {
                                             return (
@@ -189,7 +189,7 @@ const ChatBox = () => {
                                             );
                                         })
                                     }
-                                </>
+                                </ScrollableFeed>
                             )}
                         </Flex>
 

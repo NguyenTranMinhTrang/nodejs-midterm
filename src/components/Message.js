@@ -13,7 +13,7 @@ const Message = ({ left, content, time }) => {
     const timeFormat = getTime.getHours() + ":" + getTime.getMinutes();
 
     return (
-        <VStack mt={2} alignItems={left ? 'flex-start' : 'flex-end'}>
+        <VStack p={4} mt={2} alignItems={left ? 'flex-start' : 'flex-end'}>
             <Box w={'fit-content'} maxWidth={'70%'} borderRadius={40} bg={left ? 'white' : '#44D7B6'} p={4} shadow={'0 0 20px #ccc'}>
                 <Text >{content}</Text>
             </Box>

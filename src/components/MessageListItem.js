@@ -1,10 +1,16 @@
 import React from "react";
-import { Flex, Image, VStack, Text, Button } from '@chakra-ui/react';
+import { Flex, Image, VStack, Text } from '@chakra-ui/react';
+import _ from "lodash";
 
-const MessageListItem = (chat) => {
-
-    const handleClick = () => {
-        console.log('Click');
+const MessageListItem = ({ chat, handleClick }) => {
+    const userChat = chat?.users[1];
+    let timeDisplay;
+    const time = new Date(chat.updatedAt);
+    let hours = time.getHours();
+    if (hours <= 0) {
+        timeDisplay = `${time.getMinutes()} minutes`;
+    } else {
+        timeDisplay = `${hours}h`;
     }
 
     return (
@@ -24,20 +30,20 @@ const MessageListItem = (chat) => {
                 <Image
                     borderRadius='full'
                     objectFit='cover'
-                    src='https://bit.ly/dan-abramov'
-                    alt='Dan Abramov'
+                    src={userChat.avatar}
+                    alt={userChat.name}
                     boxSize='60px'
                 />
 
                 <VStack w={'100%'} ml={2} alignItems={'flex-start'}>
-                    <Text as='b'>Minh Trang</Text>
+                    <Text as='b'>{userChat.name}</Text>
                     <Text color={'#676767'}>Online</Text>
                 </VStack>
-                <VStack w={'30%'}>
-                    <Text color={'#676767'}>3h ago</Text>
+                <VStack w={'40%'}>
+                    <Text color={'#676767'}>{timeDisplay} ago</Text>
                 </VStack>
             </Flex>
-            <Text mt={2} fontWeight={'medium'}>A new comming message ...</Text>
+            {chat.unread && <Text mt={2} fontWeight={'medium'}>A new comming message ...</Text>}
         </Flex>
     );
 }

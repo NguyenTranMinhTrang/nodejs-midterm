@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { ChatState } from "../context/ChatProvider";
 
 const Login = () => {
-    const { user, setUser } = ChatState();
+    const { setUser } = ChatState();
     const navigate = useNavigate();
     const [data, setData] = useState({
         email: '',
@@ -29,7 +29,9 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (user) {
+        const userInfo = utils.getDataFromLocal('user');
+        if (userInfo) {
+            setUser(userInfo);
             navigate("/");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
