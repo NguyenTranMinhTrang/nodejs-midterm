@@ -1,16 +1,18 @@
 import React from "react";
 import { Flex, Image, VStack, Text } from '@chakra-ui/react';
+import formatDistance from "date-fns/formatDistance";
 import _ from "lodash";
+import { ChatState } from "../context/ChatProvider";
 
 const MessageListItem = ({ chat, handleClick }) => {
-    const userChat = chat?.users[1];
+    const { user } = ChatState();
+    const userFind = _.filter(chat?.users, (userChat) => {
+        return userChat._id !== user._id;
+    });
+    const latestMessage = chat?.latestMessage;
     let timeDisplay;
-    const time = new Date(chat.updatedAt);
-    let hours = time.getHours();
-    if (hours <= 0) {
-        timeDisplay = `${time.getMinutes()} minutes`;
-    } else {
-        timeDisplay = `${hours}h`;
+    if (latestMessage) {
+        timeDisplay = formatDistance(new Date(latestMessage.createdAt), new Date());
     }
 
     return (
@@ -30,20 +32,19 @@ const MessageListItem = ({ chat, handleClick }) => {
                 <Image
                     borderRadius='full'
                     objectFit='cover'
-                    src={userChat.avatar}
-                    alt={userChat.name}
+                    src={userFind[0].avatar}
+                    alt={userFind[0].name}
                     boxSize='60px'
                 />
 
                 <VStack w={'100%'} ml={2} alignItems={'flex-start'}>
-                    <Text as='b'>{userChat.name}</Text>
+                    <Text as='b'>{userFind[0].name}</Text>
                     <Text color={'#676767'}>Online</Text>
                 </VStack>
-                <VStack w={'40%'}>
-                    <Text color={'#676767'}>{timeDisplay} ago</Text>
+                <VStack w={'100%'}>
+                    <Text color={'#676767'}>{timeDisplay ? `${timeDisplay} ago` : ''}</Text>
                 </VStack>
             </Flex>
-            {chat.unread && <Text mt={2} fontWeight={'medium'}>A new comming message ...</Text>}
         </Flex>
     );
 }

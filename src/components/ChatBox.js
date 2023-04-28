@@ -34,11 +34,8 @@ const ChatBox = () => {
     const [typing, setTyping] = useState(false);
     const [istyping, setIsTyping] = useState(false);
     const {
-        unReadChats,
         user,
         selectedChat,
-        setUnReadChats,
-        setChats
     } = ChatState();
 
     useEffect(() => {
@@ -57,7 +54,8 @@ const ChatBox = () => {
     }, [selectedChat]);
 
     useEffect(() => {
-        socket.on("message recieved", (newMessageRecieved) => {
+        socket.on("received message", (newMessageRecieved) => {
+            console.log('newMessageRecieved: ', newMessageRecieved);
             if (
                 !selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id
             ) {
@@ -119,6 +117,12 @@ const ChatBox = () => {
         }
     };
 
+    const handleEnter = (event) => {
+        if (event.key === "Enter" && newMessage) {
+            sendMessage();
+        }
+    }
+
 
     return (
         <Flex
@@ -140,7 +144,7 @@ const ChatBox = () => {
                             <Image
                                 borderRadius='full'
                                 objectFit='cover'
-                                src={user?.avatar}
+                                src={selectedChat?.users[1].avatar}
                                 alt='Dan Abramov'
                                 boxSize='60px'
                             />
@@ -207,6 +211,7 @@ const ChatBox = () => {
                                     focusBorderColor='#44D7B6'
                                     value={newMessage}
                                     onChange={typingHandler}
+                                    onKeyDown={handleEnter}
                                 />
                                 <InputRightElement
                                     children={

@@ -22,6 +22,8 @@ const Home = () => {
     const { user } = ChatState();
     const navigate = useNavigate();
 
+    console.log('user: ', user);
+
     useEffect(() => {
         if (!user) {
             navigate("/login");

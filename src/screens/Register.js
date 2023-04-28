@@ -27,7 +27,6 @@ const Register = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        avatar: '',
     });
     const [file, setFile] = useState(null);
     const [show, setShow] = useState(false);
@@ -82,6 +81,7 @@ const Register = () => {
                     }
                 }
             }
+            console.log('dataPost: ', dataPost);
             try {
                 const response = await axiosInstance.post(constants.REGISTER, dataPost);
                 if (response.data.success) {

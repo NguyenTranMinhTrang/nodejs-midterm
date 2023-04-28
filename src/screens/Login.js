@@ -137,6 +137,16 @@ const Login = () => {
                 >
                     Login
                 </Button>
+                <Button
+                    onClick={() => navigate('/register')}
+                    color={'white'}
+                    bgGradient='linear(to-r, teal.500, green.500)'
+                    w={'100%'} mt={4}
+                    borderRadius={30}
+                    isLoading={loading}
+                >
+                    Register
+                </Button>
             </Flex>
         </Flex >
     );

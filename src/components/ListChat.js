@@ -38,15 +38,10 @@ const ListChat = () => {
 
     const getListChat = async () => {
         const list = await services.getAllChat(user.token);
-        const newList = _.map(list, (chat) => {
-            return {
-                ...chat,
-                unread: false
-            }
-        })
-        console.log('list: ', newList);
-        setChats(newList);
+        setChats(list);
     }
+
+    console.log('list: ', chats);
 
     useEffect(() => {
         getListChat();
@@ -55,17 +50,18 @@ const ListChat = () => {
 
     const handleFunction = async (userId) => {
         const getChat = await services.accessChat(userId, user.token);
+        console.log('New chat: ', getChat);
         if (!chats.find((c) => c._id === getChat._id)) setChats([getChat, ...chats]);
         setSelectedChat(getChat);
         onClose();
     }
 
-    const handleSearch = async (text) => {
-        if (!text) {
+    const handleSearch = async () => {
+        if (!search) {
             toast.error('Please enter something to search !');
         } else {
             setLoading(true);
-            const response = await services.searchUser(text, user.token);
+            const response = await services.searchUser(search, user.token);
             setResultSearch(response);
             setLoading(false);
         }
@@ -131,7 +127,7 @@ const ListChat = () => {
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
-                            <Button onClick={handleSearch}>Go</Button>
+                            <Button onClick={() => handleSearch()}>Go</Button>
                         </Flex>
 
                         {loading ? (
